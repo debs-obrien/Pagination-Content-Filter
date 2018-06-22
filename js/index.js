@@ -42,15 +42,12 @@ const createPagination = (totalPagination) => {
         ul.appendChild(li);
         li.appendChild(link);
         link.setAttribute('href', '#');
-        link.setAttribute('class', 'page-number');
         newPage = i + 1;
         link.innerHTML = newPage;
-        const currentPage = document.getElementsByClassName('page-number');
-        currentPage[0].setAttribute('class', 'page-number active');
-        currentPage[i].addEventListener('click', changePage);
+
     }
-
-
+    const link = document.getElementsByTagName('A');
+    link[0].setAttribute('class', 'active');
 };
 
 const calculatePage = (startPage, max) => {
@@ -59,20 +56,25 @@ const calculatePage = (startPage, max) => {
 };
 
 const activeClass = () => {
-    if(event.target.className !== 'page-number active'){
-        let notActive = document.getElementsByClassName('active');
-        notActive[0].setAttribute('class', 'page-number');
-        event.target.setAttribute('class', 'page-number active');
+    const active = document.querySelector('.active');
+    if(active){
+        active.classList.remove('active');
     }
+    event.target.classList.add('active');
 };
 
 
 const changePage = () => {
-    startPage = (event.target.innerHTML -1) * max;
-    showPage(list, startPage);
-    activeClass();
+    event.stopPropagation();
+    if(event.target.tagName === 'A'){
+        activeClass();
+        startPage = (event.target.innerHTML -1) * max;
+        showPage(list, startPage);
+    }
 };
 
 createPagination(totalPagination);
 calculatePage(startPage, max);
 showPage(list, startPage);
+document.querySelector('.pagination >ul').addEventListener('click', changePage);
+
